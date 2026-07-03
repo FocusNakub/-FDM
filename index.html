@@ -70,7 +70,20 @@ function loginAdmin(fromModal=false){const key=(fromModal?document.getElementByI
 async function adminDelete(id){if(!isAdmin)return toast('ต้องเข้าสู่ระบบ Admin ก่อน'); await deleteDoc(doc(db,'finalProject','settings','entries',id)); toast('ลบแล้ว')} async function resetAll(){if(!isAdmin)return toast('ต้องเข้าสู่ระบบ Admin ก่อน'); if(!confirm('รีเซ็ตทั้งหมด?'))return; const snaps=await getDocs(collection(db,'finalProject','settings','entries')); const batch=writeBatch(db); snaps.forEach(d=>batch.delete(d.ref)); await batch.commit(); toast('รีเซ็ตแล้ว')} async function toggleOpen(){if(!isAdmin)return toast('ต้องเข้าสู่ระบบ Admin ก่อน'); await setDoc(doc(db,'finalProject','settings'),{open:!state.open},{merge:true})} async function saveSchedule(){if(!isAdmin)return toast('ต้องเข้าสู่ระบบ Admin ก่อน'); const scheduleStart=document.getElementById('scheduleStart').value; const scheduleEnd=document.getElementById('scheduleEnd').value; if(scheduleStart&&scheduleEnd&&new Date(scheduleEnd)<=new Date(scheduleStart))return toast('เวลาปิดต้องอยู่หลังเวลาเปิด'); state.scheduleStart=scheduleStart; state.scheduleEnd=scheduleEnd; scheduleDirty=false; render(); await setDoc(doc(db,'finalProject','settings'),{scheduleStart,scheduleEnd},{merge:true}); toast('บันทึกเวลาแล้ว')} async function clearSchedule(){if(!isAdmin)return toast('ต้องเข้าสู่ระบบ Admin ก่อน'); state.scheduleStart=''; state.scheduleEnd=''; scheduleDirty=false; syncScheduleInputs(true); render(); await setDoc(doc(db,'finalProject','settings'),{scheduleStart:'',scheduleEnd:''},{merge:true}); toast('ล้างเวลาแล้ว')}
 function exportCSV(){const csv='name,role,time,editCode\n'+state.entries.map(e=>`${e.name},${roleName(e.role)},${e.time||''},${e.code}`).join('\n'); const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='final-project-positions.csv';a.click()}
 function openAdmin(){show('adminModal')} function openEdit(){show('editModal')} function showRules(){show('rulesModal')} function copyCode(){navigator.clipboard?.writeText(lastCode);toast('คัดลอกรหัสแล้ว')}
-Object.assign(window,{selectRole,submitEdit,loginAdmin,adminDelete,resetAll,toggleOpen,saveSchedule,clearSchedule,exportCSV,openAdmin,openEdit,showRules,closeModal,copyCode,markScheduleDirty}); setInterval(render,1000); render();
+function updateCountdown(){
+  const st=getOpenStatus();
+  const openText=document.getElementById('openText');
+  const dot=document.querySelector('.status-dot');
+  const scheduleLabel=document.getElementById('scheduleLabel');
+  const countdownText=document.getElementById('countdownText');
+  const scheduleInfo=document.getElementById('scheduleInfo');
+  if(openText) openText.textContent=st.label.replace(/^[🟢🟡🔴]\s*/,'');
+  if(dot) dot.style.background=st.open?'var(--green)':(state.open?'#f7b731':'var(--red)');
+  if(scheduleLabel) scheduleLabel.textContent=st.label;
+  if(countdownText) countdownText.textContent=st.count;
+  if(scheduleInfo) scheduleInfo.textContent=st.info;
+}
+Object.assign(window,{selectRole,submitEdit,loginAdmin,adminDelete,resetAll,toggleOpen,saveSchedule,clearSchedule,exportCSV,openAdmin,openEdit,showRules,closeModal,copyCode,markScheduleDirty}); setInterval(updateCountdown,1000); render();
 </script>
 </body>
 </html>
