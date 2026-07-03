@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ใช้งานง่ายสำหรับโปรเจกต์ห้องเรียน: ทุกคนอ่าน/เขียนได้
+    // เหมาะกับงานสนุก ๆ ไม่ใช่งานที่ต้องปลอดภัยจริง
+    match /finalProject/{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
