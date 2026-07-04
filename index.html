@@ -223,25 +223,81 @@ button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);b
   white-space:nowrap;
   flex:0 0 auto;
 }
-.live-announcement-text{
-  min-width:0;
-  flex:1;
-  overflow:hidden;
-}
-.live-announcement-text span{
-  display:inline-block;
-  white-space:nowrap;
-  animation:announcementTicker 18s linear infinite;
-  font-weight:900;
-}
-@keyframes announcementTicker{
-  from{transform:translateX(55%)}
-  to{transform:translateX(-100%)}
-}
 @media(max-width:900px){
   .live-dashboard{grid-template-columns:1fr}
   .live-progress-main{flex-direction:column;align-items:flex-start}
   .live-quick{grid-template-columns:1fr}
+}
+
+
+/* ===== v5.0.0 Enhancements ===== */
+.info-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.info-box{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.info-box b{font-size:20px}
+.leaderboard-row{display:flex;gap:10px;align-items:center;background:#fff8fa;border:1px solid var(--line);border-radius:14px;padding:10px}
+.rank{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--pink2);font-weight:950;color:var(--pink)}
+.notify-stack{position:fixed;right:16px;top:16px;z-index:80;display:grid;gap:10px;max-width:320px}
+.notify-card{background:#20141a;color:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 16px 38px rgba(0,0,0,.25);animation:notifyIn .25s ease}
+.footer{margin:28px 0 8px;text-align:center;color:var(--muted);font-weight:800;font-size:13px}
+.footer button{margin-top:8px}
+.version-link{background:transparent;color:var(--pink);box-shadow:none;border:0;padding:4px 8px}
+.system-card{background:#fff8fa;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px}
+@keyframes notifyIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@media(max-width:900px){.info-row{grid-template-columns:1fr}.notify-stack{left:12px;right:12px;max-width:none}}
+
+
+.live-announcement-text{
+  min-width:0;
+  flex:1;
+  overflow:hidden;
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+.live-announcement-track{
+  display:flex;
+  width:max-content;
+  gap:48px;
+  animation:smoothAnnouncement 26s linear infinite;
+}
+.live-announcement-track span{
+  white-space:nowrap;
+  font-weight:950;
+}
+@keyframes smoothAnnouncement{
+  from{transform:translateX(0)}
+  to{transform:translateX(calc(-50% - 24px))}
+}
+.usage-steps{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.usage-step{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+}
+.usage-step b{
+  display:block;
+  color:var(--pink);
+  margin-bottom:5px;
+}
+.usage-step span{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+.usage-note{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+@media(max-width:900px){
+  .usage-steps{grid-template-columns:1fr}
 }
 
 </style>
@@ -259,36 +315,81 @@ button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);b
   </header>
 
   <div class="setup" id="setupWarn" style="display:none">⚠️ ยังไม่ได้ใส่ Firebase Config ในไฟล์ index.html</div>
-  <div class="notice" id="announcementBox" style="display:none"><div><b>📢 ประกาศจากแอดมิน</b><div id="announcementText" style="margin-top:8px;color:var(--ink);font-weight:800"></div></div></div>
+</div>
 
-  <div class="live-marquee"><span id="marqueeText">กำลังโหลดข้อมูล...</span></div>
   <section class="live-board">
     <div class="live-head"><div class="live-tag">LIVE INFO BOARD</div><div class="dots" id="liveDots"></div></div>
     <div id="liveSlides"></div>
   </section>
 
-  <section class="notice"><div><b>📢 วิธีใช้งาน</b><div class="rules"><span class="chip">กดตำแหน่งก่อน แล้วค่อยกรอกชื่อ</span><span class="chip">1 คนเลือกได้ 1 ตำแหน่ง</span><span class="chip">แก้ไขได้ 1 ครั้ง</span><span class="chip">ข้อมูลออนไลน์ ทุกคนเห็นพร้อมกัน</span></div></div><button class="secondary" onclick="showRules()">ดูวิธีใช้แบบเต็ม</button></section>
+  <section class="notice">
+    <div>
+      <b>📖 วิธีใช้งาน</b>
+      <div class="usage-steps">
+        <div class="usage-step"><b>① เลือกตำแหน่ง</b><span>กดปุ่ม “ลงตำแหน่งนี้” ในตำแหน่งที่ต้องการ</span></div>
+        <div class="usage-step"><b>② กรอกชื่อ</b><span>ระบบจะเปิดหน้าต่างให้กรอกชื่อของคุณ</span></div>
+        <div class="usage-step"><b>③ ยืนยัน</b><span>กด “ยืนยันลงตำแหน่ง” แล้วระบบจะบันทึกทันที</span></div>
+        <div class="usage-step"><b>④ เก็บรหัสแก้ไข</b><span>แคปหรือคัดลอกรหัส 4 ตัวไว้ ใช้แก้ไขภายหลัง</span></div>
+      </div>
+      <div class="usage-note">
+        <span class="chip">1 คนเลือกได้ 1 ตำแหน่ง</span>
+        <span class="chip">แก้ไขได้ 1 ครั้ง</span>
+        <span class="chip">ข้อมูลอัปเดตแบบเรียลไทม์</span>
+        <span class="chip">ตำแหน่งเต็มแล้วจะกดไม่ได้</span>
+      </div>
+    </div>
+    <button class="secondary" onclick="showRules()">ดูวิธีใช้แบบเต็ม</button>
+  </section>
 
   <main class="grid">
     <section><div class="cards" id="roleCards"></div></section>
     <aside class="side">
       <div class="panel" id="myProfileBox" style="display:none"><h2>✅ ข้อมูลของฉัน</h2><div id="myProfileContent"></div></div>
-      <div class="panel"><h2>📊 Dashboard</h2><div class="stat"><div><span class="small">ลงตำแหน่งแล้ว</span><br><b id="joined">0</b></div><div><span class="small">ตำแหน่งทั้งหมด</span><br><b id="totalSlots">11</b></div></div><div class="progressbar"><span id="progressFill"></span></div><p class="small" id="progressText">0%</p><div class="schedule-status"><div class="small" id="scheduleLabel">สถานะเวลา</div><div class="countdown" id="countdownText">--:--:--</div><div class="small" id="scheduleInfo">ยังไม่ได้ตั้งเวลา</div></div><div class="admin-actions" style="margin-top:12px"><button class="secondary muted-btn" onclick="openMembers()">👥 สมาชิกทั้งหมด</button><button class="secondary muted-btn" onclick="openCallSheet()">📄 Call Sheet</button><button class="secondary muted-btn" onclick="copyPageLink()">🔗 คัดลอกลิงก์</button></div><hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><h3 style="margin:0 0 8px">🔔 Live Activity</h3><div id="activityFeed" class="mini-list"><div class="small">ยังไม่มีข้อมูล</div></div></div>
+      <div class="panel"><h2>📊 Dashboard</h2><div class="stat"><div><span class="small">ลงตำแหน่งแล้ว</span><br><b id="joined">0</b></div><div><span class="small">ตำแหน่งทั้งหมด</span><br><b id="totalSlots">11</b></div></div><div class="progressbar"><span id="progressFill"></span></div><p class="small" id="progressText">0%</p><div class="schedule-status"><div class="small" id="scheduleLabel">สถานะเวลา</div><div class="countdown" id="countdownText">--:--:--</div><div class="small" id="scheduleInfo">ยังไม่ได้ตั้งเวลา</div></div><div class="admin-actions" style="margin-top:12px"><button class="secondary muted-btn" onclick="openMembers()">👥 สมาชิกทั้งหมด</button><button class="secondary muted-btn" onclick="openCallSheet()">📄 Call Sheet</button><button class="secondary muted-btn" onclick="copyPageLink()">🔗 คัดลอกลิงก์</button></div><hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><h3 style="margin:0 0 8px">🔔 Live Activity</h3><div id="activityFeed" class="mini-list"><div class="small">ยังไม่มีข้อมูล</div></div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+      <div class="info-row">
+        <div class="info-box"><div class="small">🌐 Online Now</div><b id="onlineNow">1</b><div class="small">คนกำลังเปิดเว็บ</div></div>
+        <div class="info-box"><div class="small">📈 Estimated</div><b id="estimatedComplete">-</b><div class="small">สถานะทีม</div></div>
+      </div>
+      <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+      <h3 style="margin:0 0 8px">🏆 Leaderboard</h3>
+      <div id="leaderboard" class="mini-list"><div class="small">ยังไม่มีข้อมูล</div></div>
+      <div class="small" id="lastUpdate" style="margin-top:10px">อัปเดตล่าสุด -</div>
+      </div>
 
       <div class="panel" id="adminLogin"><h2>👑 Admin</h2><p class="small">กรอก Admin Key เพื่อจัดการข้อมูล</p><div class="field"><label>Admin Key</label><input id="adminKey" type="password" placeholder="กรอกรหัสผู้ดูแล"></div><button onclick="loginAdmin()">เข้าสู่ระบบ</button></div>
 
-      <div class="panel admin-box"><h2>⚙️ Admin Panel</h2><div class="admin-actions"><button onclick="toggleOpen()" class="secondary">🔒 เปิด/ปิดลงตำแหน่ง</button><button onclick="exportCSV()" class="secondary">📥 CSV</button><button onclick="exportJSON()" class="secondary">📦 JSON</button><button onclick="resetAll()" class="danger">รีเซ็ตทั้งหมด</button></div>
+      <div class="panel admin-box"><h2>⚙️ Admin Panel</h2>
+      <div class="system-card"><div class="small">System</div><div class="name">Version 5.0.0 · Focus Nakub</div><div class="small">Firebase Firestore · GitHub Pages · Realtime Online</div></div>
+      <div class="admin-actions"><button onclick="toggleOpen()" class="secondary">🔒 เปิด/ปิดลงตำแหน่ง</button><button onclick="exportCSV()" class="secondary">📥 CSV</button><button onclick="exportJSON()" class="secondary">📦 JSON</button><button onclick="resetAll()" class="danger">รีเซ็ตทั้งหมด</button></div>
       <hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><h3 style="margin:0 0 8px">📢 ประกาศหน้าเว็บ</h3><div class="field"><label>ข้อความประกาศ</label><input id="announcementInput" placeholder="เช่น ขอให้ทุกคนลงตำแหน่งก่อน 20:00"></div><div class="admin-actions"><button onclick="saveAnnouncement()">Publish</button><button onclick="clearAnnouncement()" class="secondary">ล้างประกาศ</button></div>
       <hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><h3 style="margin:0 0 8px">👥 จำนวนช่องตำแหน่ง</h3><div id="roleAdminControls" class="time-grid"></div>
       <hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><h3 style="margin:0 0 8px">⏰ ตั้งเวลาเปิด/ปิด</h3><div class="time-grid"><div class="field"><label>เวลาเปิดลงตำแหน่ง</label><input id="scheduleStart" type="datetime-local" oninput="markScheduleDirty()"></div><div class="field"><label>เวลาปิดลงตำแหน่ง</label><input id="scheduleEnd" type="datetime-local" oninput="markScheduleDirty()"></div><div class="admin-actions"><button onclick="saveSchedule()">บันทึกเวลา</button><button onclick="clearSchedule()" class="secondary">ล้างเวลา</button></div></div>
       <hr style="border:0;border-top:1px solid var(--line);margin:14px 0"><h3 style="margin:0 0 8px">รายชื่อ / รหัสแก้ไข</h3><table class="table"><thead><tr><th>ชื่อ</th><th>ตำแหน่ง</th><th></th></tr></thead><tbody id="adminTable"></tbody></table></div>
     </aside>
   </main>
+
+  <footer class="footer">
+    <div>Final Project Position System</div>
+    <button class="version-link" onclick="openAbout()">Version 5.0.0</button>
+    <div>Designed & Developed by <b>Focus Nakub</b></div>
+    <div>Powered by Firebase Firestore • GitHub Pages</div>
+    <div>© 2026 Focus Nakub</div>
+  </footer>
 </div>
 
-<div class="modal show" id="rulesModal"><div class="modal-card"><h2>📋 วิธีใช้งาน</h2><p>กดเลือกตำแหน่งที่ต้องการก่อน แล้วระบบจะให้กรอกชื่อในหน้าต่างยืนยัน</p><p>✅ 1 คนเลือกได้แค่ 1 ตำแหน่ง<br>✅ แก้ไขได้ 1 ครั้ง<br>✅ หลังเลือกแล้วจะได้รหัสแก้ไข 4 ตัว<br>✅ ข้อมูลออนไลน์ ทุกคนเห็นพร้อมกัน</p><button onclick="closeModal('rulesModal')">เริ่มเลือกตำแหน่ง</button></div></div>
+<div class="modal show" id="rulesModal"><div class="modal-card"><h2>📋 วิธีใช้งานแบบเต็ม</h2>
+    <div class="usage-steps" style="grid-template-columns:1fr">
+      <div class="usage-step"><b>① กดเลือกตำแหน่ง</b><span>เลือกตำแหน่งที่ต้องการจากการ์ด แล้วกดปุ่ม “ลงตำแหน่งนี้”</span></div>
+      <div class="usage-step"><b>② กรอกชื่อ</b><span>ระบบจะเด้งหน้าต่างขึ้นมา ให้กรอกชื่อของคุณ เช่น โฟกัส</span></div>
+      <div class="usage-step"><b>③ ยืนยันการลงตำแหน่ง</b><span>กดปุ่ม “ยืนยันลงตำแหน่ง” ระบบจะบันทึกข้อมูลลงออนไลน์ทันที ทุกคนเห็นพร้อมกัน</span></div>
+      <div class="usage-step"><b>④ เก็บรหัสแก้ไข</b><span>หลังลงสำเร็จ ระบบจะให้รหัส 4 ตัว เช่น D418 กรุณาแคปหน้าจอหรือคัดลอกไว้</span></div>
+      <div class="usage-step"><b>⑤ หากต้องการแก้ไข</b><span>กด “แก้ไขข้อมูล” แล้วกรอกชื่อ + รหัสแก้ไข สามารถแก้ได้ 1 ครั้งเท่านั้น</span></div>
+    </div>
+    <p class="small">หมายเหตุ: ถ้าตำแหน่งเต็มหรือระบบปิดลงตำแหน่ง จะไม่สามารถกดเลือกได้ หากมีปัญหาให้ติดต่อ Admin</p>
+    <button onclick="closeModal('rulesModal')">เริ่มเลือกตำแหน่ง</button></div></div>
 
-<div class="modal" id="signupModal"><div class="modal-card"><h2 id="signupTitle">ลงตำแหน่ง</h2><p class="small" id="signupInfo"></p><div class="field"><label>ชื่อของคุณ</label><input id="signupName" placeholder="เช่น โฟกัส"></div><p class="small">หลังยืนยัน ระบบจะสร้างรหัสแก้ไข 4 ตัว กรุณาแคปหน้าจอไว้</p><div class="admin-actions"><button onclick="confirmSignup()">ยืนยันลงตำแหน่ง</button><button class="secondary" onclick="closeModal('signupModal')">ยกเลิก</button></div></div></div>
+<div class="modal" id="signupModal"><div class="modal-card"><h2 id="signupTitle">ลงตำแหน่ง</h2><p class="small" id="signupInfo"></p><div class="field"><label>ชื่อของคุณ</label><input id="signupName" placeholder="เช่น โฟกัส"></div><p class="small">ตรวจสอบตำแหน่งให้ถูกต้อง แล้วกด “ยืนยันลงตำแหน่ง” หลังจากนั้นระบบจะให้รหัสแก้ไข 4 ตัว กรุณาแคปหน้าจอไว้</p><div class="admin-actions"><button onclick="confirmSignup()">ยืนยันลงตำแหน่ง</button><button class="secondary" onclick="closeModal('signupModal')">ยกเลิก</button></div></div></div>
 
 <div class="modal" id="successModal"><div class="modal-card"><h2>🎉 ลงตำแหน่งสำเร็จ</h2><p id="successText"></p><div class="code" id="editCodeBox">D418</div><p class="small">📷 กรุณาแคปหน้าจอนี้ไว้ ใช้สำหรับแก้ไขข้อมูลภายหลัง</p><button onclick="copyCode()">คัดลอกรหัส</button> <button class="secondary" onclick="closeModal('successModal')">ปิด</button></div></div>
 
@@ -301,11 +402,15 @@ button.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);b
 <div class="modal" id="membersModal"><div class="modal-card"><h2>👥 สมาชิกทั้งหมด</h2><div id="membersList" class="mini-list"></div><div style="margin-top:14px"><button class="secondary" onclick="closeModal('membersModal')">ปิด</button></div></div></div>
 <div class="modal" id="callSheetModal"><div class="modal-card"><h2>📄 Call Sheet</h2><p class="small">Final Project · FDM13167 · Romance</p><div id="callSheetList"></div><div class="admin-actions" style="margin-top:14px"><button onclick="printCallSheet()">🖨️ Print / Save PDF</button><button class="secondary" onclick="closeModal('callSheetModal')">ปิด</button></div></div></div>
 <div class="modal" id="qrModal"><div class="modal-card"><h2>📱 QR Code</h2><p class="small">สแกนเพื่อเข้าเว็บเลือกตำแหน่ง</p><div style="text-align:center"><img id="qrImg" alt="QR Code" style="width:230px;height:230px;border:1px solid var(--line);border-radius:18px;padding:10px;background:#fff"></div><div class="admin-actions" style="margin-top:14px"><button onclick="copyPageLink()">คัดลอกลิงก์</button><button class="secondary" onclick="closeModal('qrModal')">ปิด</button></div></div></div>
+
+<div class="modal" id="aboutModal"><div class="modal-card"><h2>Final Project Position System</h2><div class="system-card"><div class="small">Version</div><div class="name">5.0.0</div></div><div class="system-card"><div class="small">Designed & Developed by</div><div class="name">Focus Nakub</div></div><div class="system-card"><div class="small">Database</div><div class="name">Firebase Firestore</div></div><div class="system-card"><div class="small">Hosting</div><div class="name">GitHub Pages</div></div><div class="system-card"><div class="small">New in v5.0.0</div><div class="small">Leaderboard · Recent Activity · Online Now · Estimated Complete · Notification · Credits</div></div><div style="margin-top:14px"><button class="secondary" onclick="closeModal('aboutModal')">ปิด</button></div></div></div>
+<div class="notify-stack" id="notifyStack"></div>
+
 <div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-import { getFirestore, doc, collection, getDocs, onSnapshot, runTransaction, setDoc, deleteDoc, writeBatch, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+import { getFirestore, doc, collection, getDocs, onSnapshot, runTransaction, setDoc, deleteDoc, writeBatch, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCVIKvqSf7iR7ctALe0A6pakakQsd_qYGw",
@@ -320,16 +425,28 @@ const ADMIN_KEY = "Focus3256";
 
 const roles=[{id:'director',emoji:'🎬',name:'Director',max:1},{id:'ad',emoji:'📋',name:'Production Manager',max:1},{id:'dop',emoji:'📷',name:'DOP',max:1},{id:'camera',emoji:'🎥',name:'Camera Operator',max:1},{id:'lighting',emoji:'💡',name:'Lighting',max:3},{id:'art',emoji:'🎨',name:'Art Director',max:1},{id:'set',emoji:'🪑',name:'Set Design',max:2},{id:'makeup',emoji:'💄',name:'Makeup',max:1}];
 let db=null,isAdmin=false,lastCode='',selectedRoleId='',liveIndex=0,liveSlideCount=1;
-let state={open:true,scheduleStart:'',scheduleEnd:'',announcement:'',roleCaps:{},entries:[]};
+let state={open:true,scheduleStart:'',scheduleEnd:'',announcement:'',roleCaps:{},entries:[],presence:[]};
+let knownEntryIds=new Set();
+const clientId=localStorage.getItem('fp_client_id')||crypto.randomUUID();localStorage.setItem('fp_client_id',clientId);
 const entryCol=()=>collection(db,'finalProject','settings','entries');
 const entryDoc=(id)=>doc(db,'finalProject','settings','entries',id);
 const settingsDoc=()=>doc(db,'finalProject','settings');
+const presenceCol=()=>collection(db,'finalProject','settings','presence');
+const presenceDoc=()=>doc(db,'finalProject','settings','presence',clientId);
 const isConfigured=()=>!firebaseConfig.apiKey.includes('PASTE_')&&!firebaseConfig.projectId.includes('PASTE_');
 if(!isConfigured()){document.getElementById('setupWarn').style.display='block'}else{const app=initializeApp(firebaseConfig);db=getFirestore(app);initOnline();}
 
 async function initOnline(){
   onSnapshot(settingsDoc(),snap=>{const data=snap.exists()?snap.data():{};state.open=data.open!==false;const oldStart=state.scheduleStart||'',oldEnd=state.scheduleEnd||'';state.scheduleStart=data.scheduleStart||'';state.scheduleEnd=data.scheduleEnd||'';state.announcement=data.announcement||'';state.roleCaps=data.roleCaps||{};syncScheduleInputs(oldStart!==state.scheduleStart||oldEnd!==state.scheduleEnd);syncAnnouncementInput();render();});
-  onSnapshot(entryCol(),snap=>{state.entries=snap.docs.map(d=>({id:d.id,...d.data()}));render();});
+  onSnapshot(entryCol(),snap=>{
+    const newEntries=snap.docs.map(d=>({id:d.id,...d.data()}));
+    newEntries.forEach(e=>{if(knownEntryIds.size && !knownEntryIds.has(e.id)) pushNotification(`${e.name} ลง ${roleName(e.role)} แล้ว`);});
+    knownEntryIds=new Set(newEntries.map(e=>e.id));
+    state.entries=newEntries;render();
+  });
+  onSnapshot(presenceCol(),snap=>{const now=Date.now();state.presence=snap.docs.map(d=>({id:d.id,...d.data()})).filter(p=>p.lastSeenMs && now-p.lastSeenMs<20000);renderSidePanels();});
+  await setDoc(presenceDoc(),{clientId,lastSeenMs:Date.now(),page:location.href},{merge:true});
+  setInterval(()=>setDoc(presenceDoc(),{clientId,lastSeenMs:Date.now(),page:location.href},{merge:true}),8000);
 }
 function norm(s){return(s||'').trim().toLowerCase()}function roleName(id){return roles.find(r=>r.id===id)?.name||id}function roleMax(id){const r=roles.find(x=>x.id===id);return Math.max(0,Number(state.roleCaps?.[id]??r.max))}function roleFree(id){return roleMax(id)-state.entries.filter(e=>e.role===id).length}
 function totalSlots(){return roles.reduce((sum,r)=>sum+roleMax(r.id),0)}function initials(name){return(name||'?').trim().slice(0,1).toUpperCase()||'?'}function entrySort(a,b){return(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0)}
@@ -339,7 +456,7 @@ function effectiveOpen(){return getOpenStatus().open}function formatDuration(ms)
 let scheduleDirty=false;function syncScheduleInputs(force=false){const a=document.getElementById('scheduleStart'),b=document.getElementById('scheduleEnd');if(!a||!b)return;if(force&&!scheduleDirty){a.value=state.scheduleStart||'';b.value=state.scheduleEnd||''}}function markScheduleDirty(){scheduleDirty=true}
 function show(id){document.getElementById(id).classList.add('show')}function closeModal(id){document.getElementById(id).classList.remove('show')}function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2500)}
 function render(){updateCountdown();renderAnnouncement();renderLiveBanner();renderCards();renderSidePanels();renderAdmin();}
-function renderAnnouncement(){const box=document.getElementById('announcementBox'),txt=document.getElementById('announcementText');if(box&&txt){box.style.display=state.announcement?'grid':'none';txt.textContent=state.announcement||''}}
+function renderAnnouncement(){/* ใช้แถบประกาศเลื่อนใน Live Info เท่านั้น */}
 function renderLiveBanner(){
   const total=totalSlots(), joined=state.entries.length, pct=total?Math.min(100,Math.round(joined/total*100)):0, st=getOpenStatus();
   const fullCount=roles.filter(r=>state.entries.filter(e=>e.role===r.id).length>=roleMax(r.id)).length;
@@ -395,15 +512,18 @@ function renderLiveBanner(){
     </div>
     <div class="live-announcement">
       <b>📢 ประกาศ</b>
-      <div class="live-announcement-text"><span>${state.announcement || 'ยังไม่มีประกาศจากแอดมิน · ระบบกำลังเปิดลงตำแหน่งแบบเรียลไทม์'}</span></div>
+      <div class="live-announcement-text">
+        <div class="live-announcement-track">
+          <span>${state.announcement || 'ยังไม่มีประกาศจากแอดมิน · ระบบกำลังเปิดลงตำแหน่งแบบเรียลไทม์'}</span>
+          <span>${state.announcement || 'ยังไม่มีประกาศจากแอดมิน · ระบบกำลังเปิดลงตำแหน่งแบบเรียลไทม์'}</span>
+        </div>
+      </div>
     </div>
   `;
   document.getElementById('liveDots').innerHTML='';
   liveSlideCount=1;
   liveIndex=0;
 
-  const summary=roles.map(r=>{const used=state.entries.filter(e=>e.role===r.id).length,free=roleMax(r.id)-used;return `${r.emoji} ${r.name}: ${used}/${roleMax(r.id)} ${free>0?'เหลือ '+free+' ที่':'เต็มแล้ว'}`}).join(' │ ');
-  document.getElementById('marqueeText').textContent=`${st.open?'🟢':'🔴'} ${st.label} │ 👥 ${joined}/${total} │ ${summary} │ ⏰ ${st.count}${state.announcement?' │ 📢 '+state.announcement:''}`;
 }
 function renderCards(){
   document.getElementById('roleCards').innerHTML=roles.map(r=>{const max=roleMax(r.id),entries=state.entries.filter(e=>e.role===r.id),full=entries.length>=max;return`<article class="card ${full?'full':''}"><div class="role-title"><h3>${r.emoji} ${r.name}</h3><span class="count">${entries.length}/${max}</span></div><div class="slots">${Array.from({length:max}).map((_,i)=>{const e=entries[i];return`<div class="slot ${e?'taken':''}"><div><div class="name">${e?e.name:'ว่าง'}</div><div class="small">${e?'เลือกเวลา '+(e.time||'-'):'รอคนกดเลือก'}</div></div>${e?'✅':'🟢'}</div>`}).join('')}</div><button ${full||!effectiveOpen()||!isConfigured()?'disabled':''} onclick="openSignup('${r.id}')">ลงตำแหน่งนี้</button></article>`}).join('');
@@ -413,7 +533,19 @@ function renderCards(){
 }
 function renderSidePanels(){const total=totalSlots(),joined=state.entries.length,pct=total?Math.min(100,Math.round(joined/total*100)):0;document.getElementById('joined').textContent=joined;document.getElementById('totalSlots').textContent=total;document.getElementById('progressFill').style.width=pct+'%';document.getElementById('progressText').textContent=`${joined} / ${total} คน · ${pct}%`;renderMyProfile();renderActivity();}
 function renderMyProfile(){const saved=JSON.parse(localStorage.getItem('fp_my_entry')||'null'),box=document.getElementById('myProfileBox'),cont=document.getElementById('myProfileContent');if(!saved){box.style.display='none';return}const live=state.entries.find(e=>e.id===saved.id)||state.entries.find(e=>norm(e.name)===norm(saved.name)&&e.code===saved.code);if(!live){box.style.display='none';return}box.style.display='block';cont.innerHTML=`<div class="mini-row"><span class="avatar">${initials(live.name)}</span><div style="flex:1"><div class="name">${live.name}</div><div class="small">${roleName(live.role)} · ${live.time||'-'}</div><div class="small">รหัสแก้ไข: <b>${live.code}</b></div></div></div><div class="admin-actions" style="margin-top:10px"><button class="secondary muted-btn" onclick="fillMyEdit('${live.name}','${live.code}')">✏️ แก้ไข</button><button class="secondary muted-btn" onclick="copyText('${live.code}')">📋 Copy Code</button></div>`}
-function renderActivity(){const el=document.getElementById('activityFeed'),rows=[...state.entries].sort(entrySort).slice(-5).reverse();el.innerHTML=rows.length?rows.map(e=>`<div class="mini-row"><span class="avatar">${initials(e.name)}</span><div style="flex:1"><div class="name">${e.name}</div><div class="small">ลง ${roleName(e.role)} · ${e.time||'-'}</div></div></div>`).join(''):'<div class="small">ยังไม่มีข้อมูล</div>'}
+function renderActivity(){
+  const el=document.getElementById('activityFeed'),rows=[...state.entries].sort(entrySort).slice(-5).reverse();
+  el.innerHTML=rows.length?rows.map(e=>`<div class="mini-row" title="${e.name} · ${roleName(e.role)} · ${e.time||'-'}"><span class="avatar">${initials(e.name)}</span><div style="flex:1"><div class="name">${e.name}</div><div class="small">ลง ${roleName(e.role)} · ${e.time||'-'}</div></div></div>`).join(''):'<div class="small">ยังไม่มีข้อมูล</div>';
+  const lb=document.getElementById('leaderboard');
+  if(lb){
+    const leaders=[...state.entries].sort(entrySort).slice(0,10);
+    lb.innerHTML=leaders.length?leaders.map((e,i)=>`<div class="leaderboard-row"><span class="rank">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><div style="flex:1"><div class="name">${e.name}</div><div class="small">${roleName(e.role)} · ${e.time||'-'}</div></div></div>`).join(''):'<div class="small">ยังไม่มีข้อมูล</div>';
+  }
+  const online=document.getElementById('onlineNow'); if(online) online.textContent=Math.max(1,state.presence?.length||1);
+  const est=document.getElementById('estimatedComplete');
+  if(est){const left=Math.max(0,totalSlots()-state.entries.length);est.textContent=left===0?'Team Ready':`เหลือ ${left}`;}
+  const last=document.getElementById('lastUpdate'); if(last) last.textContent='อัปเดตล่าสุด '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
 function renderAdmin(){const roleCtl=document.getElementById('roleAdminControls');if(roleCtl)roleCtl.innerHTML=roles.map(r=>{const max=roleMax(r.id),used=state.entries.filter(e=>e.role===r.id).length;return`<div class="slot"><div><div class="name">${r.emoji} ${r.name}</div><div class="small">ใช้แล้ว ${used}/${max}</div></div><div class="admin-actions"><button class="secondary" onclick="changeRoleCap('${r.id}',-1)" ${max<=used?'disabled':''}>-</button><button class="secondary" onclick="changeRoleCap('${r.id}',1)">+</button></div></div>`}).join('');
   document.getElementById('adminTable').innerHTML=state.entries.map(e=>`<tr><td>${e.name}<br><span class="small">รหัส: ${e.code}</span></td><td>${roleName(e.role)}</td><td><button class="ghost" onclick="openAdminEdit('${e.id}')">แก้ไข</button><button class="ghost" onclick="copyText('${e.code}')">Copy</button><button class="ghost" onclick="adminDelete('${e.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="3" class="small">ยังไม่มีข้อมูล</td></tr>'}
 function openSignup(roleId){selectedRoleId=roleId;const r=roles.find(x=>x.id===roleId);document.getElementById('signupTitle').textContent=`${r.emoji} ${r.name}`;document.getElementById('signupInfo').textContent=`เหลือ ${Math.max(0,roleFree(roleId))} ที่ จากทั้งหมด ${roleMax(roleId)} ที่`;document.getElementById('signupName').value='';show('signupModal');setTimeout(()=>document.getElementById('signupName').focus(),100)}
@@ -439,7 +571,17 @@ function openAdmin(){show('adminModal')}function openEdit(){show('editModal')}fu
 function updateCountdown(){const st=getOpenStatus(),openText=document.getElementById('openText'),dot=document.querySelector('.status-dot'),scheduleLabel=document.getElementById('scheduleLabel'),countdownText=document.getElementById('countdownText'),scheduleInfo=document.getElementById('scheduleInfo');if(openText)openText.textContent=st.label;if(dot)dot.style.background=st.open?'var(--green)':(state.open?'var(--yellow)':'var(--red)');if(scheduleLabel)scheduleLabel.textContent=st.label;if(countdownText)countdownText.textContent=st.count;if(scheduleInfo)scheduleInfo.textContent=st.info}
 function toggleTheme(){const body=document.body;const next=body.getAttribute('data-theme')==='blue'?'romance':'blue';body.setAttribute('data-theme',next);localStorage.setItem('fp_theme',next);document.getElementById('themeBtn').textContent=next==='blue'?'💙 Blue':'🌸 Romance'}
 function loadTheme(){const theme=localStorage.getItem('fp_theme')||'romance';document.body.setAttribute('data-theme',theme);document.getElementById('themeBtn').textContent=theme==='blue'?'💙 Blue':'🌸 Romance'}
-Object.assign(window,{openSignup,confirmSignup,submitEdit,loginAdmin,adminDelete,resetAll,toggleOpen,saveSchedule,clearSchedule,exportCSV,exportJSON,openAdmin,openEdit,showRules,closeModal,copyCode,markScheduleDirty,changeRoleCap,saveAnnouncement,clearAnnouncement,openAdminEdit,saveAdminEdit,copyText,copyAdminEditCode,openMembers,openCallSheet,printCallSheet,copyPageLink,openQR,toggleTheme,fillMyEdit});
+
+function pushNotification(text){
+  const stack=document.getElementById('notifyStack'); if(!stack) return;
+  const el=document.createElement('div'); el.className='notify-card'; el.textContent='🔔 '+text;
+  stack.prepend(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';},3500);
+  setTimeout(()=>el.remove(),4200);
+}
+function openAbout(){show('aboutModal')}
+
+Object.assign(window,{openSignup,confirmSignup,submitEdit,loginAdmin,adminDelete,resetAll,toggleOpen,saveSchedule,clearSchedule,exportCSV,exportJSON,openAdmin,openEdit,showRules,closeModal,copyCode,markScheduleDirty,changeRoleCap,saveAnnouncement,clearAnnouncement,openAdminEdit,saveAdminEdit,copyText,copyAdminEditCode,openMembers,openCallSheet,printCallSheet,copyPageLink,openQR,toggleTheme,fillMyEdit,openAbout});
 setInterval(updateCountdown,1000);loadTheme();render();
 </script>
 </body>
